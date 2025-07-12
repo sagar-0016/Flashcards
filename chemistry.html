@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry - Flashcard Study Hub</title>
+    <style>
+        :root {
+            /* Light theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e8f0fe;
+            --surface: #ffffff;
+            --surface-variant: #f1f3f4;
+            --on-surface: #202124;
+            --on-surface-variant: #5f6368;
+            --primary: #1a73e8;
+            --primary-variant: #174ea6;
+            --primary-container: #e8f0fe;
+            --on-primary: #ffffff;
+            --outline: #dadce0;
+            --outline-variant: #e8eaed;
+            --shadow: rgba(60, 64, 67, 0.15);
+            --shadow-hover: rgba(60, 64, 67, 0.3);
+            --success: #34a853;
+            --warning: #fbbc04;
+            --error: #ea4335;
+            --chemistry-primary: #ff6b35;
+            --chemistry-secondary: #f7931e;
+            --chemistry-accent: #ff9f1c;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme */
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --surface: #161b22;
+            --surface-variant: #21262d;
+            --on-surface: #f0f6fc;
+            --on-surface-variant: #8b949e;
+            --primary: #58a6ff;
+            --primary-variant: #1f6feb;
+            --primary-container: #0d2d47;
+            --on-primary: #0d1117;
+            --outline: #30363d;
+            --outline-variant: #21262d;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.5);
+            --success: #26a641;
+            --warning: #d29922;
+            --error: #f85149;
+            --chemistry-primary: #ff8c42;
+            --chemistry-secondary: #ffb347;
+            --chemistry-accent: #ffd700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--on-surface);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--on-surface-variant);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-variant);
+        }
+
+        .breadcrumb-separator {
+            color: var(--on-surface-variant);
+        }
+
+        .subject-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--chemistry-primary), var(--chemistry-secondary));
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="16" fill="rgba(255,255,255,0.1)">H₂O CO₂ NaCl CH₄ NH₃ C₆H₁₂O₆ CaCO₃ HCl NaOH H₂SO₄</text></svg>') repeat;
+            animation: float 25s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+        }
+
+        .subject-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .subject-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subject-description {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle, .back-button {
+            background: none;
+            border: 2px solid var(--outline);
+            color: var(--on-surface);
+            height: 48px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            padding: 0 1rem;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle {
+            width: 48px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .theme-toggle:hover, .back-button:hover {
+            background: var(--surface-variant);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chapter-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px var(--shadow-hover);
+            border-color: var(--chemistry-primary);
+        }
+
+        .chapter-card.available {
+            border-color: var(--success);
+        }
+
+        .chapter-card.coming-soon {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .chapter-card.coming-soon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px var(--shadow);
+            border-color: var(--outline);
+        }
+
+        .chapter-card.difficulty-basic {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(52, 168, 83, 0.05) 100%);
+        }
+
+        .chapter-card.difficulty-intermediate {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(251, 188, 4, 0.05) 100%);
+        }
+
+        .chapter-card.difficulty-advanced {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(234, 67, 53, 0.05) 100%);
+        }
+
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-coming-soon {
+            background: var(--warning);
+            color: white;
+        }
+
+        .chapter-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 0.75rem;
+        }
+
+        .chapter-description {
+            color: var(--on-surface-variant);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .chapter-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--on-surface-variant);
+            font-size: 0.8rem;
+        }
+
+        .stat-icon {
+            font-size: 1rem;
+        }
+
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .difficulty-basic {
+            background: rgba(52, 168, 83, 0.1);
+            color: var(--success);
+        }
+
+        .difficulty-intermediate {
+            background: rgba(251, 188, 4, 0.1);
+            color: var(--warning);
+        }
+
+        .difficulty-advanced {
+            background: rgba(234, 67, 53, 0.1);
+            color: var(--error);
+        }
+
+        .external-link {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--chemistry-primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .chapter-card:hover .external-link {
+            opacity: 1;
+        }
+
+        .progress-overview {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 24px var(--shadow);
+        }
+
+        .progress-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--on-surface);
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .progress-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--surface-variant);
+            border-radius: 12px;
+        }
+
+        .progress-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--chemistry-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.875rem;
+            color: var(--on-surface-variant);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .subject-header {
+                padding: 1.5rem;
+            }
+
+            .subject-title {
+                font-size: 2rem;
+            }
+
+            .subject-description {
+                font-size: 1rem;
+            }
+
+            .chapters-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .chapter-card {
+                padding: 1.5rem;
+            }
+
+            .chapter-title {
+                font-size: 1.2rem;
+            }
+
+            .chapter-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="breadcrumb">
+                <a href="#" onclick="goBack()">Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <span>Chemistry</span>
+            </div>
+            <div class="controls">
+                <a href="#" class="back-button" onclick="goBack()">
+                    ← Back
+                </a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    🌓
+                </button>
+            </div>
+        </div>
+
+        <div class="subject-header">
+            <span class="subject-icon">🧪</span>
+            <h1 class="subject-title">Chemistry</h1>
+            <p class="subject-description">
+                Explore the fascinating world of atoms, molecules, and chemical reactions through our comprehensive flashcard collection
+            </p>
+        </div>
+
+        <div class="progress-overview">
+            <h2 class="progress-title">Your Progress</h2>
+            <div class="progress-stats">
+                <div class="progress-item">
+                    <div class="progress-number">14</div>
+                    <div class="progress-label">Total Chapters</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-number">9</div>
+                    <div class="progress-label">Available</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-number">4</div>
+                    <div class="progress-label">Completed</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-number">72%</div>
+                    <div class="progress-label">Mastery</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chapters-grid">
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/atomic-structure')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">⚛️</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Atomic Structure</h3>
+                <p class="chapter-description">
+                    Understand the fundamental building blocks of matter: protons, neutrons, electrons, and atomic models.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>32 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>28 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/periodic-table')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">📋</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Periodic Table</h3>
+                <p class="chapter-description">
+                    Master the periodic table, element properties, groups, periods, and periodic trends.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>38 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>35 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/chemical-bonding')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔗</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Chemical Bonding</h3>
+                <p class="chapter-description">
+                    Learn about ionic, covalent, and metallic bonds, molecular geometry, and bond properties.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>45 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>42 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/stoichiometry')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">⚖️</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Stoichiometry</h3>
+                <p class="chapter-description">
+                    Master mole calculations, balanced equations, limiting reactants, and percent yield.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>40 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>38 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/states-of-matter')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🌡️</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">States of Matter</h3>
+                <p class="chapter-description">
+                    Explore solids, liquids, gases, phase changes, and the kinetic molecular theory.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>30 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>25 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/solutions')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🧊</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Solutions & Concentration</h3>
+                <p class="chapter-description">
+                    Learn about molarity, molality, solubility, and colligative properties of solutions.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>35 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>32 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/acids-bases')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🧪</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Acids & Bases</h3>
+                <p class="chapter-description">
+                    Understand pH, acid-base theories, neutralization reactions, and buffer systems.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>42 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>40 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-advanced" onclick="openExternalLink('https://example.com/thermodynamics')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔥</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Thermodynamics</h3>
+                <p class="chapter-description">
+                    Master enthalpy, entropy, Gibbs free energy, and predict reaction spontaneity.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>48 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>45 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-advanced" onclick="openExternalLink('https://example.com/kinetics')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">⚡</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Chemical Kinetics</h3>
+                <p class="chapter-description">
+                    Study reaction rates, rate laws, activation energy, and catalysis mechanisms.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>44 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>42 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔋</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Electrochemistry</h3>
+                <p class="chapter-description">
+                    Explore redox reactions, galvanic cells, electrolysis, and electrochemical applications.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>38 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>36 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🌿</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Organic Chemistry</h3>
+                <p class="chapter-description">
+                    Learn about hydrocarbons, functional groups, nomenclature, and organic reactions.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>55 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>50 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🏭</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Industrial Chemistry</h3>
+                <p class="chapter-description">
+                    Discover large-scale chemical processes, catalysis, and industrial applications.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>33 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>30 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🧬</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Biochemistry</h3>
+                <p class="chapter-description">
+                    Explore proteins, enzymes, metabolism, and the chemistry of living systems.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>46 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>43 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔬</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Analytical Chemistry</h3>
+                <p class="chapter-description">
+                    Master spectroscopy, chromatography, and quantitative analysis techniques.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>40 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>38 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize app
+        function initializeApp() {
+            const savedTheme = sessionStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        // Theme toggle function
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            sessionStorage.setItem('theme', newTheme);
+        }
+
+        // Go back function
+        function goBack() {
+            // In a real app, this would navigate back to the main page
+            alert('This would navigate back to the main study hub page');
+        }
+
+        // Open external link function
+        function openExternalLink(url) {
+            // In a real app, this would open the specific chapter
+            alert(`This would open the flashcard set: ${url}`);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 't' && e.ctrlKey) {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+
+        // Add some interactive enhancements
+        document.querySelectorAll('.chapter-card.available').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Simulate progress updates
+        function updateProgress() {
+            const progressNumbers = document.querySelectorAll('.progress-number');
+            progressNumbers.forEach((number, index) => {
+                const originalValue = number.textContent;
+                let currentValue = 0;
+                const targetValue = parseInt(originalValue) || originalValue;
+                
+                if (typeof targetValue === 'number') {
+                    const increment = targetValue / 20;
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= targetValue) {
+                            currentValue = targetValue;
+                            clearInterval(timer);
+                        }
+                        number.textContent = Math.round(currentValue);
+                    }, 50);
+                }
+            });
+        }
+
+        // Run progress animation after page load
+        setTimeout(updateProgress, 500);
+    </script>
+</body>
+</html>

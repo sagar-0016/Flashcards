@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology - Flashcard Study Hub</title>
+    <style>
+        :root {
+            /* Light theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e8f5e8;
+            --surface: #ffffff;
+            --surface-variant: #f1f3f4;
+            --on-surface: #202124;
+            --on-surface-variant: #5f6368;
+            --primary: #2e7d32;
+            --primary-variant: #1b5e20;
+            --primary-container: #e8f5e8;
+            --on-primary: #ffffff;
+            --outline: #dadce0;
+            --outline-variant: #e8eaed;
+            --shadow: rgba(60, 64, 67, 0.15);
+            --shadow-hover: rgba(60, 64, 67, 0.3);
+            --success: #34a853;
+            --warning: #fbbc04;
+            --error: #ea4335;
+            --bio-primary: #4caf50;
+            --bio-secondary: #8bc34a;
+            --bio-accent: #00bcd4;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme */
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #1a2f1a;
+            --surface: #161b22;
+            --surface-variant: #21262d;
+            --on-surface: #f0f6fc;
+            --on-surface-variant: #8b949e;
+            --primary: #4caf50;
+            --primary-variant: #388e3c;
+            --primary-container: #1b5e20;
+            --on-primary: #0d1117;
+            --outline: #30363d;
+            --outline-variant: #21262d;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.5);
+            --success: #26a641;
+            --warning: #d29922;
+            --error: #f85149;
+            --bio-primary: #66bb6a;
+            --bio-secondary: #aed581;
+            --bio-accent: #4dd0e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--on-surface);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--on-surface-variant);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-variant);
+        }
+
+        .breadcrumb-separator {
+            color: var(--on-surface-variant);
+        }
+
+        .subject-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bio-primary), var(--bio-secondary));
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="16" fill="rgba(255,255,255,0.1)">🧬🔬🦠🌱🐛🌿💚🧪🔬🦋🌸🍃🌳🐝🦆🐠🌺</text></svg>') repeat;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+        }
+
+        .subject-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .subject-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subject-description {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle, .back-button {
+            background: none;
+            border: 2px solid var(--outline);
+            color: var(--on-surface);
+            height: 48px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            padding: 0 1rem;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle {
+            width: 48px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .theme-toggle:hover, .back-button:hover {
+            background: var(--surface-variant);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chapter-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px var(--shadow-hover);
+            border-color: var(--bio-primary);
+        }
+
+        .chapter-card.available {
+            border-color: var(--success);
+        }
+
+        .chapter-card.coming-soon {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .chapter-card.coming-soon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px var(--shadow);
+            border-color: var(--outline);
+        }
+
+        .chapter-card.difficulty-basic {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(76, 175, 80, 0.05) 100%);
+        }
+
+        .chapter-card.difficulty-intermediate {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(251, 188, 4, 0.05) 100%);
+        }
+
+        .chapter-card.difficulty-advanced {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(234, 67, 53, 0.05) 100%);
+        }
+
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-coming-soon {
+            background: var(--warning);
+            color: white;
+        }
+
+        .chapter-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 0.75rem;
+        }
+
+        .chapter-description {
+            color: var(--on-surface-variant);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .chapter-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--on-surface-variant);
+            font-size: 0.8rem;
+        }
+
+        .stat-icon {
+            font-size: 1rem;
+        }
+
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .difficulty-basic {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--bio-primary);
+        }
+
+        .difficulty-intermediate {
+            background: rgba(251, 188, 4, 0.1);
+            color: var(--warning);
+        }
+
+        .difficulty-advanced {
+            background: rgba(234, 67, 53, 0.1);
+            color: var(--error);
+        }
+
+        .external-link {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bio-primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .chapter-card:hover .external-link {
+            opacity: 1;
+        }
+
+        .progress-overview {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 24px var(--shadow);
+        }
+
+        .progress-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--on-surface);
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .progress-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--surface-variant);
+            border-radius: 12px;
+        }
+
+        .progress-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--bio-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.875rem;
+            color: var(--on-surface-variant);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .subject-header {
+                padding: 1.5rem;
+            }
+
+            .subject-title {
+                font-size: 2rem;
+            }
+
+            .subject-description {
+                font-size: 1rem;
+            }
+
+            .chapters-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .chapter-card {
+                padding: 1.5rem;
+            }
+
+            .chapter-title {
+                font-size: 1.2rem;
+            }
+
+            .chapter-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="breadcrumb">
+                <a href="#" onclick="goBack()">Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <span>Biology</span>
+            </div>
+            <div class="controls">
+                <a href="#" class="back-button" onclick="goBack()">
+                    ← Back
+                </a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    🌓
+                </button>
+            </div>
+        </div>
+
+        <div class="subject-header">
+            <span class="subject-icon">🧬</span>
+            <h1 class="subject-title">Biology</h1>
+            <p class="subject-description">
+                Explore the fascinating world of life sciences from cells to ecosystems with our comprehensive biology flashcards
+            </p>
+        </div>
+
+        <div class="progress-overview">
+            <h2 class="progress-title">Your Progress</h2>
+            <div class="progress-stats">
+                <div class="progress-item">
+                    <div class="progress-number">14</div>
+                    <div class="progress-label">Total Chapters</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-number">9</div>
+                    <div class="progress-label">Available</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-number">4</div>
+                    <div class="progress-label">Completed</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-number">72%</div>
+                    <div class="progress-label">Mastery</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chapters-grid">
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/cell-biology')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔬</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Cell Biology</h3>
+                <p class="chapter-description">
+                    Discover the basic unit of life - from cell structure and organelles to cellular processes.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>35 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>28 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/human-anatomy')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🫀</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Human Anatomy</h3>
+                <p class="chapter-description">
+                    Learn about the human body systems, organs, and their functions in maintaining life.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>42 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>35 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/genetics')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🧬</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Genetics</h3>
+                <p class="chapter-description">
+                    Understand DNA, genes, heredity, and genetic variation from Mendel to modern genetics.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>38 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>32 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/evolution')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🦕</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Evolution & Natural Selection</h3>
+                <p class="chapter-description">
+                    Explore Darwin's theory, natural selection, and the mechanisms driving evolutionary change.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>33 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>28 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/ecology')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🌳</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Ecology & Ecosystems</h3>
+                <p class="chapter-description">
+                    Study the interactions between organisms and their environment in various ecosystems.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>30 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>25 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/biochemistry')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🧪</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Biochemistry</h3>
+                <p class="chapter-description">
+                    Master the chemical processes within living organisms and biomolecule structures.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>45 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>38 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-advanced" onclick="openExternalLink('https://example.com/molecular-biology')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔬</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Molecular Biology</h3>
+                <p class="chapter-description">
+                    Dive deep into DNA replication, transcription, translation, and protein synthesis.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>40 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>35 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-intermediate" onclick="openExternalLink('https://example.com/physiology')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🫁</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Human Physiology</h3>
+                <p class="chapter-description">
+                    Understand how body systems work together to maintain homeostasis and health.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>48 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>42 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card available difficulty-basic" onclick="openExternalLink('https://example.com/plant-biology')">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🌱</div>
+                    <span class="chapter-status status-available">Available</span>
+                </div>
+                <div class="external-link">🔗</div>
+                <h3 class="chapter-title">Plant Biology</h3>
+                <p class="chapter-description">
+                    Explore plant structure, photosynthesis, reproduction, and adaptation strategies.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>32 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>28 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-basic">
+                    🟢 Basic
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🦠</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Microbiology</h3>
+                <p class="chapter-description">
+                    Study bacteria, viruses, fungi, and other microorganisms and their roles in life.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>36 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>30 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🧠</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Neuroscience</h3>
+                <p class="chapter-description">
+                    Explore the nervous system, brain function, and neural communication mechanisms.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>44 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>38 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔬</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Biotechnology</h3>
+                <p class="chapter-description">
+                    Learn about genetic engineering, CRISPR, and modern biotechnology applications.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>38 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>32 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🌊</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Marine Biology</h3>
+                <p class="chapter-description">
+                    Discover ocean life, marine ecosystems, and aquatic organism adaptations.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>34 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>29 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-intermediate">
+                    🟡 Intermediate
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🔬</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Developmental Biology</h3>
+                <p class="chapter-description">
+                    Study how organisms develop from single cells to complex multicellular forms.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>41 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>35 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+
+            <div class="chapter-card coming-soon">
+                <div class="chapter-header">
+                    <div class="chapter-icon">🩺</div>
+                    <span class="chapter-status status-coming-soon">Coming Soon</span>
+                </div>
+                <h3 class="chapter-title">Immunology</h3>
+                <p class="chapter-description">
+                    Understand the immune system, adaptive immunity, and disease defense mechanisms.
+                </p>
+                <div class="chapter-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <span>39 Cards</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⏱️</span>
+                        <span>33 min</span>
+                    </div>
+                </div>
+                <div class="difficulty-badge difficulty-advanced">
+                    🔴 Advanced
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+        }
+
+        // Back navigation
+        function goBack() {
+            window.history.back();
+        }
+
+        // Open external links
+        function openExternalLink(url) {
+            window.open(url, '_blank');
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

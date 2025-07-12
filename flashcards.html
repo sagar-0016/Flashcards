@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Study Hub</title>
+    <style>
+        :root {
+            /* Light theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e8f0fe;
+            --surface: #ffffff;
+            --surface-variant: #f1f3f4;
+            --on-surface: #202124;
+            --on-surface-variant: #5f6368;
+            --primary: #1a73e8;
+            --primary-variant: #174ea6;
+            --primary-container: #e8f0fe;
+            --on-primary: #ffffff;
+            --outline: #dadce0;
+            --outline-variant: #e8eaed;
+            --shadow: rgba(60, 64, 67, 0.15);
+            --shadow-hover: rgba(60, 64, 67, 0.3);
+            --success: #34a853;
+            --warning: #fbbc04;
+            --error: #ea4335;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme */
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --surface: #161b22;
+            --surface-variant: #21262d;
+            --on-surface: #f0f6fc;
+            --on-surface-variant: #8b949e;
+            --primary: #58a6ff;
+            --primary-variant: #1f6feb;
+            --primary-container: #0d2d47;
+            --on-primary: #0d1117;
+            --outline: #30363d;
+            --outline-variant: #21262d;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.5);
+            --success: #26a641;
+            --warning: #d29922;
+            --error: #f85149;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--on-surface);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-section {
+            flex: 1;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--on-surface-variant);
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--outline);
+            color: var(--on-surface);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--surface-variant);
+            border-color: var(--primary);
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chapter-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .chapter-card.available {
+            border-color: var(--success);
+        }
+
+        .chapter-card.coming-soon {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .chapter-card.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 4px 24px var(--shadow);
+            border-color: var(--outline);
+        }
+
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-coming-soon {
+            background: var(--warning);
+            color: white;
+        }
+
+        .chapter-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 0.75rem;
+        }
+
+        .chapter-description {
+            color: var(--on-surface-variant);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .chapter-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: auto;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--on-surface-variant);
+            font-size: 0.875rem;
+        }
+
+        .stat-icon {
+            font-size: 1rem;
+        }
+
+        .external-link {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary);
+            color: var(--on-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .chapter-card:hover .external-link {
+            opacity: 1;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: var(--on-primary);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 24px var(--shadow-hover);
+            transition: all 0.2s ease;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 32px var(--shadow-hover);
+        }
+
+        .page-flashcards {
+            display: none;
+        }
+
+        .page-flashcards.active {
+            display: block;
+        }
+
+        .page-home.active {
+            display: block;
+        }
+
+        .page-home {
+            display: none;
+        }
+
+        .back-button {
+            background: var(--surface-variant);
+            color: var(--on-surface);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background: var(--outline-variant);
+            transform: translateX(-4px);
+        }
+
+        /* Flashcard styles */
+        .flashcard-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            perspective: 1000px;
+            background: transparent;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-4px);
+        }
+
+        .flashcard-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            border-radius: 16px;
+        }
+
+        .flashcard-inner:hover {
+            box-shadow: 0 8px 32px var(--shadow-hover);
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-content {
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 4px 24px var(--shadow);
+            top: 0;
+            left: 0;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: var(--primary-container);
+        }
+
+        .flashcard-question {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-answer {
+            font-size: 1.25rem;
+            color: var(--on-surface);
+            line-height: 1.6;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--on-surface-variant);
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: var(--surface);
+            color: var(--on-surface);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px var(--shadow);
+            font-family: monospace;
+            font-weight: bold;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            color: var(--on-primary);
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn:disabled:hover {
+            background: var(--surface);
+            color: var(--on-surface);
+        }
+
+        .card-counter {
+            font-size: 1.125rem;
+            color: var(--on-surface-variant);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-done {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-done:hover {
+            background: #2e7d32;
+            transform: translateY(-1px);
+        }
+
+        .btn-later {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-later:hover {
+            background: #f57c00;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-variant);
+            color: var(--on-surface-variant);
+            border: 1px solid var(--outline);
+        }
+
+        .btn-secondary:hover {
+            background: var(--outline-variant);
+            transform: translateY(-1px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--outline-variant);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--on-surface-variant);
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--on-surface);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .chapters-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .chapter-card {
+                padding: 1.5rem;
+            }
+
+            .chapter-title {
+                font-size: 1.25rem;
+            }
+
+            .chapter-stats {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .floating-action {
+                bottom: 1rem;
+                right: 1rem;
+                width: 56px;
+                height: 56px;
+            }
+
+            .flashcard {
+                height: 300px;
+            }
+
+            .flashcard-content {
+                padding: 1.5rem;
+            }
+
+            .flashcard-question {
+                font-size: 1.25rem;
+            }
+
+            .flashcard-answer {
+                font-size: 1rem;
+            }
+
+            .navigation {
+                gap: 1rem;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+    <div class="page-home active" id="homePage">
+        <div class="app-container">
+            <div class="header">
+                <div class="title-section">
+                    <h1 class="title">Flashcard Study Hub</h1>
+                    <p class="subtitle">Master your subjects with interactive flashcards</p>
+                </div>
+                <div class="controls">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        🌓
+                    </button>
+                </div>
+            </div>
+
+            <div class="chapters-grid">
+                <div class="chapter-card available" onclick="openChapter('sun')">
+                    <div class="chapter-header">
+                        <div class="chapter-icon">☀️</div>
+                        <span class="chapter-status status-available">Available</span>
+                    </div>
+                    <h3 class="chapter-title">The Sun</h3>
+                    <p class="chapter-description">
+                        Learn about our nearest star, its composition, energy production, and fascinating properties that make life on Earth possible.
+                    </p>
+                    <div class="chapter-stats">
+                        <div class="stat">
+                            <span class="stat-icon">📚</span>
+                            <span>10 Cards</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">⏱️</span>
+                            <span>15 min</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">🎯</span>
+                            <span>Basic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chapter-card available" onclick="openExternalLink('https://sagarsaurabhssnl.github.io/Flashcards/')">
+                    <div class="chapter-header">
+                        <div class="chapter-icon">🌍</div>
+                        <span class="chapter-status status-available">Available</span>
+                    </div>
+                    <div class="external-link">🔗</div>
+                    <h3 class="chapter-title">Earth Sciences</h3>
+                    <p class="chapter-description">
+                        Explore our planet's geology, atmosphere, and environmental systems through comprehensive flashcards.
+                    </p>
+                    <div class="chapter-stats">
+                        <div class="stat">
+                            <span class="stat-icon">📚</span>
+                            <span>25 Cards</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">⏱️</span>
+                            <span>30 min</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">🎯</span>
+                            <span>Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chapter-card coming-soon">
+                    <div class="chapter-header">
+                        <div class="chapter-icon">🧬</div>
+                        <span class="chapter-status status-coming-soon">Coming Soon</span>
+                    </div>
+                    <h3 class="chapter-title">Biology Fundamentals</h3>
+                    <p class="chapter-description">
+                        Dive into the building blocks of life, from cellular structures to complex biological processes.
+                    </p>
+                    <div class="chapter-stats">
+                        <div class="stat">
+                            <span class="stat-icon">📚</span>
+                            <span>35 Cards</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">⏱️</span>
+                            <span>45 min</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">🎯</span>
+                            <span>Advanced</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chapter-card coming-soon">
+                    <div class="chapter-header">
+                        <div class="chapter-icon">⚗️</div>
+                        <span class="chapter-status status-coming-soon">Coming Soon</span>
+                    </div>
+                    <h3 class="chapter-title">Chemistry Basics</h3>
+                    <p class="chapter-description">
+                        Master the periodic table, chemical reactions, and fundamental principles of chemistry.
+                    </p>
+                    <div class="chapter-stats">
+                        <div class="stat">
+                            <span class="stat-icon">📚</span>
+                            <span>40 Cards</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">⏱️</span>
+                            <span>40 min</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">🎯</span>
+                            <span>Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chapter-card coming-soon">
+                    <div class="chapter-header">
+                        <div class="chapter-icon">🔬</div>
+                        <span class="chapter-status status-coming-soon">Coming Soon</span>
+                    </div>
+                    <h3 class="chapter-title">Physics Concepts</h3>
+                    <p class="chapter-description">
+                        Understand the fundamental laws that govern our universe, from mechanics to quantum physics.
+                    </p>
+                    <div class="chapter-stats">
+                        <div class="stat">
+                            <span class="stat-icon">📚</span>
+                            <span>50 Cards</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">⏱️</span>
+                            <span>60 min</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">🎯</span>
+                            <span>Advanced</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chapter-card coming-soon">
+                    <div class="chapter-header">
+                        <div class="chapter-icon">🌌</div>
+                        <span class="chapter-status status-coming-soon">Coming Soon</span>
+                    </div>
+                    <h3 class="chapter-title">Space & Astronomy</h3>
+                    <p class="chapter-description">
+                        Journey through the cosmos and learn about planets, stars, galaxies, and the mysteries of space.
+                    </p>
+                    <div class="chapter-stats">
+                        <div class="stat">
+                            <span class="stat-icon">📚</span>
+                            <span>30 Cards</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">⏱️</span>
+                            <span>35 min</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-icon">🎯</span>
+                            <span>Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flashcard Page -->
+    <div class="page-flashcards" id="flashcardPage">
+        <div class="app-container">
+            <button class="back-button" onclick="goHome()">
+                ← Back to Chapters
+            </button>
+
+            <div class="header">
+                <h1 class="title" id="chapterTitle">The Sun</h1>
+                <div class="controls">
+                    <button class="btn-secondary" onclick="resetProgress()">
+                        🔄 Reset Progress
+                    </button>
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        🌓
+                    </button>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="flashcard-container" id="flashcardContainer">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="previousCard()" id="prevBtn">
+                    &#8592;
+                </button>
+                <div class="card-counter" id="cardCounter">
+                    1 / 10
+                </div>
+                <button class="nav-btn" onclick="nextCard()" id="nextBtn">
+                    &#8594;
+                </button>
+            </div>
+
+            <div class="actions">
+                <button class="action-btn btn-done" onclick="markAsDone()">
+                    ✓ Mark as Done
+                </button>
+                <button class="action-btn btn-later" onclick="markForLater()">
+                    ⏰ See Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Flashcard data for different chapters
+        const chaptersData = {
+            sun: [
+                {
+                    id: 1,
+                    question: "What is the Sun primarily composed of?",
+                    answer: "The Sun is primarily composed of hydrogen (about 73%) and helium (about 25%), with trace amounts of heavier elements."
+                },
+                {
+                    id: 2,
+                    question: "How hot is the Sun's core?",
+                    answer: "The Sun's core temperature is approximately 15 million degrees Celsius (27 million degrees Fahrenheit)."
+                },
+                {
+                    id: 3,
+                    question: "What is the Sun's energy source?",
+                    answer: "The Sun generates energy through nuclear fusion, where hydrogen atoms combine to form helium, releasing tremendous amounts of energy."
+                },
+                {
+                    id: 4,
+                    question: "How long does it take for sunlight to reach Earth?",
+                    answer: "It takes approximately 8 minutes and 20 seconds for sunlight to travel from the Sun to Earth."
+                },
+                {
+                    id: 5,
+                    question: "What are sunspots?",
+                    answer: "Sunspots are temporary dark areas on the Sun's surface caused by intense magnetic activity. They appear darker because they're cooler than surrounding areas."
+                },
+                {
+                    id: 6,
+                    question: "How old is the Sun?",
+                    answer: "The Sun is approximately 4.6 billion years old and is considered a middle-aged star."
+                },
+                {
+                    id: 7,
+                    question: "What is the Sun's diameter?",
+                    answer: "The Sun's diameter is about 1.39 million kilometers (864,000 miles), roughly 109 times the diameter of Earth."
+                },
+                {
+                    id: 8,
+                    question: "What will happen to the Sun in the future?",
+                    answer: "In about 5 billion years, the Sun will expand into a red giant star, then eventually shed its outer layers and become a white dwarf."
+                },
+                {
+                    id: 9,
+                    question: "What is the Sun's surface temperature?",
+                    answer: "The Sun's surface temperature is approximately 5,500 degrees Celsius (9,900 degrees Fahrenheit)."
+                },
+                {
+                    id: 10,
+                    question: "How does the Sun affect Earth's climate?",
+                    answer: "The Sun is the primary driver of Earth's climate system, providing the energy that powers weather patterns, ocean currents, and the water cycle."
+                }
+            ]
+        };
+
+        // App state
+        let currentChapter = null;
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let cardStatuses = {};
+        let availableCards = [];
+        let shuffledCards = [];
+        let flashcardData = [];
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Initialize app
+        function initializeApp() {
+            // Use in-memory storage instead of localStorage
+            const savedTheme = sessionStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        // Theme toggle function
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            sessionStorage.setItem('theme', newTheme);
+        }
+
+        // Open chapter
+        function openChapter(chapterName) {
+            currentChapter = chapterName;
+            flashcardData = chaptersData[chapterName] || [];
+            
+            if (flashcardData.length === 0) {
+                alert('Chapter not available yet!');
+                return;
+            }
+
+            // Update chapter title
+            document.getElementById('chapterTitle').textContent = getChapterTitle(chapterName);
+            
+            // Switch to flashcard page
+            document.getElementById('homePage').classList.remove('active');
+            document.getElementById('flashcardPage').classList.add('active');
+            
+            // Initialize flashcard functionality
+            loadCardStatuses();
+            shuffledCards = shuffleArray(flashcardData);
+            currentCardIndex = 0;
+            isFlipped = false;
+            updateAvailableCards();
+            displayCurrentCard();
+            updateUI();
+        }
+
+        // Open external link
+        function openExternalLink(url) {
+            window.open(url, '_blank');
+        }
+
+        // Get chapter title
+        function getChapterTitle(chapterName) {
+            const titles = {
+                'sun': 'The Sun',
+                'earth': 'Earth Sciences',
+                'biology': 'Biology Fundamentals',
+                'chemistry': 'Chemistry Basics',
+                'physics': 'Physics Concepts',
+                'astronomy': 'Space & Astronomy'
+            };
+            return titles[chapterName] || 'Unknown Chapter';
+        }
+
+        // Go back to home
+        function goHome() {
+            document.getElementById('flashcardPage').classList.remove('active');
+            document.getElementById('homePage').classList.add('active');
+            currentChapter = null;
+        }
+
+        // Load card statuses from memory
+        function loadCardStatuses() {
+            const key = `cardStatuses_${currentChapter}`;
+            const saved = sessionStorage.getItem(key);
+            cardStatuses = saved ? JSON.parse(saved) : {};
+        }
+
+        // Save card statuses to memory
+        function saveCardStatuses() {
+            const key = `cardStatuses_${currentChapter}`;
+            sessionStorage.setItem(key, JSON.stringify(cardStatuses));
+        }
+
+        // Update available cards (exclude completed ones)
+        function updateAvailableCards() {
+            availableCards = shuffledCards.filter(card => 
+                !cardStatuses[card.id] || cardStatuses[card.id] !== 'done'
+            );
+        }
+
+        // Display current card
+        function displayCurrentCard() {
+            const container = document.getElementById('flashcardContainer');
+            
+            if (availableCards.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>🎉 Congratulations!</h2>
+                        <p>You've completed all the flashcards in this chapter. Great job!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = availableCards[currentCardIndex];
+            
+            container.innerHTML = `
+                <div class="flashcard" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-content">
+                            <h3 class="flashcard-question">${card.question}</h3>
+                            <div class="flip-hint">Click to reveal answer</div>
+                        </div>
+                        <div class="flashcard-content flashcard-back">
+                            <p class="flashcard-answer">${card.answer}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            isFlipped = false;
+        }
+
+        // Flip card
+        function flipCard() {
+            const flashcard = document.getElementById('flashcard');
+            if (flashcard) {
+                flashcard.classList.toggle('flipped');
+                isFlipped = !isFlipped;
+            }
+        }
+
+        // Next card
+        function nextCard() {
+            if (currentCardIndex < availableCards.length - 1) {
+                currentCardIndex++;
+                displayCurrentCard();
+                updateUI();
+            }
+        }
+
+        // Previous card
+        function previousCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                displayCurrentCard();
+                updateUI();
+            }
+        }
+
+        // Mark card as done
+        function markAsDone() {
+            if (availableCards.length > 0) {
+                const card = availableCards[currentCardIndex];
+                cardStatuses[card.id] = 'done';
+                saveCardStatuses();
+                updateAvailableCards();
+                
+                // Move to next card or adjust index
+                if (currentCardIndex >= availableCards.length) {
+                    currentCardIndex = Math.max(0, availableCards.length - 1);
+                }
+                
+                displayCurrentCard();
+                updateUI();
+            }
+        }
+
+        // Mark card for later
+        function markForLater() {
+            if (availableCards.length > 0) {
+                const card = availableCards[currentCardIndex];
+                cardStatuses[card.id] = 'later';
+                saveCardStatuses();
+                nextCard();
+            }
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset your progress for this chapter?')) {
+                cardStatuses = {};
+                saveCardStatuses();
+                updateAvailableCards();
+                currentCardIndex = 0;
+                displayCurrentCard();
+                updateUI();
+            }
+        }
+
+        // Update UI elements
+        function updateUI() {
+            // Update progress bar
+            const totalCards = flashcardData.length;
+            const completedCards = Object.values(cardStatuses).filter(status => status === 'done').length;
+            const progressPercent = totalCards > 0 ? (completedCards / totalCards) * 100 : 0;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+
+            // Update card counter
+            const counter = document.getElementById('cardCounter');
+            if (availableCards.length > 0) {
+                counter.textContent = `${currentCardIndex + 1} / ${availableCards.length}`;
+            } else {
+                counter.textContent = `${completedCards} / ${totalCards} completed`;
+            }
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentCardIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentCardIndex >= availableCards.length - 1;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (currentChapter) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        previousCard();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        nextCard();
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flipCard();
+                        break;
+                    case 'Escape':
+                        e.preventDefault();
+                        goHome();
+                        break;
+                }
+            }
+        });
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
