@@ -1,337 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flashcard Study Hub</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
     <style>
-        :root {
-            /* Light theme */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-tertiary: #e8f0fe;
-            --surface: #ffffff;
-            --surface-variant: #f1f3f4;
-            --on-surface: #202124;
-            --on-surface-variant: #5f6368;
-            --primary: #1a73e8;
-            --primary-variant: #174ea6;
-            --primary-container: #e8f0fe;
-            --on-primary: #ffffff;
-            --outline: #dadce0;
-            --outline-variant: #e8eaed;
-            --shadow: rgba(60, 64, 67, 0.15);
-            --shadow-hover: rgba(60, 64, 67, 0.3);
-            --success: #34a853;
-            --warning: #fbbc04;
-            --error: #ea4335;
-        }
+      :root {
+        /* Light theme */
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e8f0fe;
+        --surface: #ffffff;
+        --surface-variant: #f1f3f4;
+        --on-surface: #202124;
+        --on-surface-variant: #5f6368;
+        --primary: #1a73e8;
+        --primary-variant: #174ea6;
+        --primary-container: #e8f0fe;
+        --on-primary: #ffffff;
+        --outline: #dadce0;
+        --outline-variant: #e8eaed;
+        --shadow: rgba(60, 64, 67, 0.15);
+        --shadow-hover: rgba(60, 64, 67, 0.3);
+        --success: #34a853;
+        --warning: #fbbc04;
+        --error: #ea4335;
+      }
 
-        [data-theme="dark"] {
-            /* Dark theme */
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-tertiary: #21262d;
-            --surface: #161b22;
-            --surface-variant: #21262d;
-            --on-surface: #f0f6fc;
-            --on-surface-variant: #8b949e;
-            --primary: #58a6ff;
-            --primary-variant: #1f6feb;
-            --primary-container: #0d2d47;
-            --on-primary: #0d1117;
-            --outline: #30363d;
-            --outline-variant: #21262d;
-            --shadow: rgba(0, 0, 0, 0.3);
-            --shadow-hover: rgba(0, 0, 0, 0.5);
-            --success: #26a641;
-            --warning: #d29922;
-            --error: #f85149;
-        }
+      [data-theme="dark"] {
+        /* Dark theme */
+        --bg-primary: #0d1117;
+        --bg-secondary: #161b22;
+        --bg-tertiary: #21262d;
+        --surface: #161b22;
+        --surface-variant: #21262d;
+        --on-surface: #f0f6fc;
+        --on-surface-variant: #8b949e;
+        --primary: #58a6ff;
+        --primary-variant: #1f6feb;
+        --primary-container: #0d2d47;
+        --on-primary: #0d1117;
+        --outline: #30363d;
+        --outline-variant: #21262d;
+        --shadow: rgba(0, 0, 0, 0.3);
+        --shadow-hover: rgba(0, 0, 0, 0.5);
+        --success: #26a641;
+        --warning: #d29922;
+        --error: #f85149;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--on-surface);
-            line-height: 1.6;
-            min-height: 100vh;
-            transition: all 0.3s ease;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: var(--bg-primary);
+        color: var(--on-surface);
+        line-height: 1.6;
+        min-height: 100vh;
+        transition: all 0.3s ease;
+      }
 
+      .app-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .title-section {
+        flex: 1;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--on-surface);
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.125rem;
+        color: var(--on-surface-variant);
+        font-weight: 400;
+      }
+
+      .controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .theme-toggle {
+        background: none;
+        border: 2px solid var(--outline);
+        color: var(--on-surface);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.2s ease;
+      }
+
+      .theme-toggle:hover {
+        background: var(--surface-variant);
+        border-color: var(--primary);
+      }
+
+      .chapters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .chapter-card {
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 24px var(--shadow);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .chapter-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px var(--shadow-hover);
+        border-color: var(--primary);
+      }
+
+      .chapter-card.available {
+        border-color: var(--success);
+      }
+
+      .chapter-card.coming-soon {
+        opacity: 0.7;
+        cursor: default;
+      }
+
+      .chapter-card.coming-soon:hover {
+        transform: none;
+        box-shadow: 0 4px 24px var(--shadow);
+        border-color: var(--outline);
+      }
+
+      .chapter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .chapter-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .chapter-status {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-available {
+        background: var(--success);
+        color: white;
+      }
+
+      .status-coming-soon {
+        background: var(--warning);
+        color: white;
+      }
+
+      .chapter-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--on-surface);
+        margin-bottom: 0.75rem;
+      }
+
+      .chapter-description {
+        color: var(--on-surface-variant);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .chapter-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: auto;
+      }
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--on-surface-variant);
+        font-size: 0.875rem;
+      }
+
+      .stat-icon {
+        font-size: 1rem;
+      }
+
+      .external-link {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary);
+        color: var(--on-primary);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .chapter-card:hover .external-link {
+        opacity: 1;
+      }
+
+      .floating-action {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--primary);
+        color: var(--on-primary);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 24px var(--shadow-hover);
+        transition: all 0.2s ease;
+      }
+
+      .floating-action:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 32px var(--shadow-hover);
+      }
+
+      @media (max-width: 768px) {
         .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
+          padding: 1rem;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .title-section {
-            flex: 1;
+          flex-direction: column;
+          text-align: center;
         }
 
         .title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--on-surface);
-            margin-bottom: 0.5rem;
+          font-size: 2rem;
         }
 
         .subtitle {
-            font-size: 1.125rem;
-            color: var(--on-surface-variant);
-            font-weight: 400;
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: 2px solid var(--outline);
-            color: var(--on-surface);
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.2s ease;
-        }
-
-        .theme-toggle:hover {
-            background: var(--surface-variant);
-            border-color: var(--primary);
+          font-size: 1rem;
         }
 
         .chapters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
         }
 
         .chapter-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 24px var(--shadow);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chapter-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px var(--shadow-hover);
-            border-color: var(--primary);
-        }
-
-        .chapter-card.available {
-            border-color: var(--success);
-        }
-
-        .chapter-card.coming-soon {
-            opacity: 0.7;
-            cursor: default;
-        }
-
-        .chapter-card.coming-soon:hover {
-            transform: none;
-            box-shadow: 0 4px 24px var(--shadow);
-            border-color: var(--outline);
-        }
-
-        .chapter-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-
-        .chapter-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .chapter-status {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-available {
-            background: var(--success);
-            color: white;
-        }
-
-        .status-coming-soon {
-            background: var(--warning);
-            color: white;
+          padding: 1.5rem;
         }
 
         .chapter-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--on-surface);
-            margin-bottom: 0.75rem;
-        }
-
-        .chapter-description {
-            color: var(--on-surface-variant);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+          font-size: 1.25rem;
         }
 
         .chapter-stats {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: auto;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--on-surface-variant);
-            font-size: 0.875rem;
-        }
-
-        .stat-icon {
-            font-size: 1rem;
-        }
-
-        .external-link {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--primary);
-            color: var(--on-primary);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .chapter-card:hover .external-link {
-            opacity: 1;
+          flex-direction: column;
+          gap: 0.75rem;
         }
 
         .floating-action {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--primary);
-            color: var(--on-primary);
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 24px var(--shadow-hover);
-            transition: all 0.2s ease;
+          bottom: 1rem;
+          right: 1rem;
+          width: 56px;
+          height: 56px;
         }
-
-        .floating-action:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 32px var(--shadow-hover);
-        }
-
-        @media (max-width: 768px) {
-            .app-container {
-                padding: 1rem;
-            }
-
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .title {
-                font-size: 2rem;
-            }
-
-            .subtitle {
-                font-size: 1rem;
-            }
-
-            .chapters-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .chapter-card {
-                padding: 1.5rem;
-            }
-
-            .chapter-title {
-                font-size: 1.25rem;
-            }
-
-            .chapter-stats {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .floating-action {
-                bottom: 1rem;
-                right: 1rem;
-                width: 56px;
-                height: 56px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Home Page -->
     <div class="app-container">
-        <div class="header">
-            <div class="title-section">
-                <h1 class="title">Flashcard Study</h1>
-                <p class="subtitle">Master your subjects with interactive flashcards</p>
-            </div>
-            <div class="controls">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    🌓
-                </button>
-            </div>
+      <div class="header">
+        <div class="title-section">
+          <h1 class="title">Flashcard Study</h1>
+          <p class="subtitle">
+            Master your subjects with interactive flashcards
+          </p>
         </div>
+        <div class="controls">
+          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+      </div>
 
-        <div class="chapters-grid">
-            <div class="chapter-card available" onclick="openExternalLink('https://example.com/sun-flashcards')">
+      <div class="chapters-grid">
+        <!-- <div class="chapter-card available" onclick="openExternalLink('https://example.com/sun-flashcards')">
                 <div class="chapter-header">
                     <div class="chapter-icon">☀️</div>
                     <span class="chapter-status status-available">Available</span>
@@ -355,9 +357,9 @@
                         <span>Basic</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <div class="chapter-card available" onclick="openExternalLink('https://sagarsaurabhssnl.github.io/Flashcards/')">
+        <!-- <div class="chapter-card available" onclick="openExternalLink('https://sagarsaurabhssnl.github.io/Flashcards/')">
                 <div class="chapter-header">
                     <div class="chapter-icon">🌍</div>
                     <span class="chapter-status status-available">Available</span>
@@ -381,158 +383,175 @@
                         <span>Intermediate</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <div class="chapter-card available" onclick="location.href='./biology.html'">
-                <div class="chapter-header">
-                    <div class="chapter-icon">🧬</div>
-                    <span class="chapter-status status-available">Available</span>
-                </div>
-                <div class="external-link">🔗</div>
-                <h3 class="chapter-title">Biology Fundamentals</h3>
-                <p class="chapter-description">
-                    Dive into the building blocks of life, from cellular structures to complex biological processes.
-                </p>
-                <div class="chapter-stats">
-                    <div class="stat">
-                        <span class="stat-icon">📚</span>
-                        <span>35 Cards</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">⏱️</span>
-                        <span>45 min</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">🎯</span>
-                        <span>Advanced</span>
-                    </div>
-                </div>
+        <div
+          class="chapter-card available"
+          onclick="location.href='./biology.html'"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🧬</div>
+            <span class="chapter-status status-available">Available</span>
+          </div>
+          <!-- <div class="external-link">🔗</div> -->
+          <h3 class="chapter-title">Biology Fundamentals</h3>
+          <p class="chapter-description">
+            Dive into the building blocks of life, from cellular structures to
+            complex biological processes.
+          </p>
+          <!-- <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>35 Cards</span>
             </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>45 min</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🎯</span>
+              <span>Advanced</span>
+            </div>
+          </div> -->
+        </div>
+        <div
+          class="chapter-card available"
+          onclick="location.href='./maths.html'"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🔢</div>
+            <span class="chapter-status status-available">Available</span>
+          </div>
+          <!-- <div class="external-link">🔗</div> -->
+          <h3 class="chapter-title">Mathematics</h3>
+          <p class="chapter-description">
+            Master algebra, geometry, and calculus concepts with interactive
+            problem-solving flashcards.
+          </p>
+          <!-- <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>20 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>25 min</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🎯</span>
+              <span>Advanced</span>
+            </div>
+          </div> -->
+        </div>
+        <div
+          class="chapter-card available"
+          onclick="location.href='./chemistry.html'"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">⚗️</div>
+            <span class="chapter-status status-available">Available</span>
+          </div>
+          <h3 class="chapter-title">Chemistry Basics</h3>
+          <p class="chapter-description">
+            Master the periodic table, chemical reactions, and fundamental
+            principles of chemistry.
+          </p>
+          <!-- <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>40 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>40 min</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🎯</span>
+              <span>Intermediate</span>
+            </div>
+          </div> -->
+        </div>
 
-            <div class="chapter-card coming-soon" onclick="location.href='./chemistry.html'">
-                <div class="chapter-header">
-                    <div class="chapter-icon">⚗️</div>
-                    <span class="chapter-status status-coming-soon">Coming Soon</span>
-                </div>
-                <h3 class="chapter-title">Chemistry Basics</h3>
-                <p class="chapter-description">
-                    Master the periodic table, chemical reactions, and fundamental principles of chemistry.
-                </p>
-                <div class="chapter-stats">
-                    <div class="stat">
-                        <span class="stat-icon">📚</span>
-                        <span>40 Cards</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">⏱️</span>
-                        <span>40 min</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">🎯</span>
-                        <span>Intermediate</span>
-                    </div>
-                </div>
+        <div
+          class="chapter-card available"
+          onclick="location.href='./physics.html'"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🔬</div>
+            <span class="chapter-status status-available">available</span>
+          </div>
+          <h3 class="chapter-title">Physics Concepts</h3>
+          <p class="chapter-description">
+            Understand the fundamental laws that govern our universe, from
+            mechanics to quantum physics.
+          </p>
+          <!-- <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>50 Cards</span>
             </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>60 min</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🎯</span>
+              <span>Advanced</span>
+            </div>
+          </div> -->
+        </div>
 
-            <div class="chapter-card coming-soon">
-                <div class="chapter-header">
-                    <div class="chapter-icon">🔬</div>
-                    <span class="chapter-status status-coming-soon">Coming Soon</span>
-                </div>
-                <h3 class="chapter-title">Physics Concepts</h3>
-                <p class="chapter-description">
-                    Understand the fundamental laws that govern our universe, from mechanics to quantum physics.
-                </p>
-                <div class="chapter-stats">
-                    <div class="stat">
-                        <span class="stat-icon">📚</span>
-                        <span>50 Cards</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">⏱️</span>
-                        <span>60 min</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">🎯</span>
-                        <span>Advanced</span>
-                    </div>
-                </div>
+        <div class="chapter-card coming-soon">
+          <div class="chapter-header">
+            <div class="chapter-icon">🌌</div>
+            <span class="chapter-status status-coming-soon">Coming Soon</span>
+          </div>
+          <h3 class="chapter-title">Space & Astronomy</h3>
+          <p class="chapter-description">
+            Journey through the cosmos and learn about planets, stars, galaxies,
+            and the mysteries of space.
+          </p>
+          <!-- <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>30 Cards</span>
             </div>
-
-            <div class="chapter-card coming-soon">
-                <div class="chapter-header">
-                    <div class="chapter-icon">🌌</div>
-                    <span class="chapter-status status-coming-soon">Coming Soon</span>
-                </div>
-                <h3 class="chapter-title">Space & Astronomy</h3>
-                <p class="chapter-description">
-                    Journey through the cosmos and learn about planets, stars, galaxies, and the mysteries of space.
-                </p>
-                <div class="chapter-stats">
-                    <div class="stat">
-                        <span class="stat-icon">📚</span>
-                        <span>30 Cards</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">⏱️</span>
-                        <span>35 min</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-icon">🎯</span>
-                        <span>Intermediate</span>
-                    </div>
-                </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>35 min</span>
             </div>
-            <div class="chapter-card available" onclick="location.href='./maths.html'">
-    <div class="chapter-header">
-        <div class="chapter-icon">🔢</div>
-        <span class="chapter-status status-available">Available</span>
-    </div>
-    <div class="external-link">🔗</div>
-    <h3 class="chapter-title">Mathematics</h3>
-    <p class="chapter-description">
-        Master algebra, geometry, and calculus concepts with interactive problem-solving flashcards.
-    </p>
-    <div class="chapter-stats">
-        <div class="stat">
-            <span class="stat-icon">📚</span>
-            <span>20 Cards</span>
+            <div class="stat">
+              <span class="stat-icon">🎯</span>
+              <span>Intermediate</span>
+            </div>
+          </div> -->
         </div>
-        <div class="stat">
-            <span class="stat-icon">⏱️</span>
-            <span>25 min</span>
-        </div>
-        <div class="stat">
-            <span class="stat-icon">🎯</span>
-            <span>Advanced</span>
-        </div>
-    </div>
-</div>
-        </div>
+      </div>
     </div>
 
     <script>
-        // Initialize app
-        function initializeApp() {
-            const savedTheme = sessionStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        }
+      // Initialize app
+      function initializeApp() {
+        const savedTheme = sessionStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
 
-        // Theme toggle function
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            sessionStorage.setItem('theme', newTheme);
-        }
+      // Theme toggle function
+      function toggleTheme() {
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        sessionStorage.setItem("theme", newTheme);
+      }
 
-        // Open external link
-        function openExternalLink(url) {
-            window.open(url, '_blank');
-        }
+      // Open external link
+      function openExternalLink(url) {
+        window.open(url, "_blank");
+      }
 
-        // Initialize app when page loads
-        document.addEventListener('DOMContentLoaded', initializeApp);
+      // Initialize app when page loads
+      document.addEventListener("DOMContentLoaded", initializeApp);
     </script>
-</body>
+  </body>
 </html>

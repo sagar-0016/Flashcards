@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mathematics - Flashcard Study Hub</title>
+    <title>Physics - Flashcard Study Hub</title>
     <style>
       :root {
         /* Light theme */
@@ -25,9 +25,9 @@
         --success: #34a853;
         --warning: #fbbc04;
         --error: #ea4335;
-        --math-primary: #673ab7;
-        --math-secondary: #9c27b0;
-        --math-accent: #e91e63;
+        --physics-primary: #2196f3;
+        --physics-secondary: #03a9f4;
+        --physics-accent: #00bcd4;
       }
 
       [data-theme="dark"] {
@@ -50,9 +50,9 @@
         --success: #26a641;
         --warning: #d29922;
         --error: #f85149;
-        --math-primary: #bb86fc;
-        --math-secondary: #cf6679;
-        --math-accent: #ff6ec7;
+        --physics-primary: #42a5f5;
+        --physics-secondary: #29b6f6;
+        --physics-accent: #26c6da;
       }
 
       * {
@@ -116,8 +116,8 @@
         padding: 2rem;
         background: linear-gradient(
           135deg,
-          var(--math-primary),
-          var(--math-secondary)
+          var(--physics-primary),
+          var(--physics-secondary)
         );
         border-radius: 20px;
         color: white;
@@ -132,9 +132,9 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="20" fill="rgba(255,255,255,0.1)">∫∂∆∑π∞√±≈∝∴∵∈∉⊂⊃∪∩</text></svg>')
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="12" fill="rgba(255,255,255,0.1)">E=mc² F=ma P=mv v=d/t a=v/t λ=c/f W=Fd KE=½mv² PE=mgh</text></svg>')
           repeat;
-        animation: float 20s infinite linear;
+        animation: float 30s infinite linear;
         pointer-events: none;
       }
 
@@ -229,11 +229,16 @@
       .chapter-card:hover {
         transform: translateY(-6px);
         box-shadow: 0 12px 40px var(--shadow-hover);
-        border-color: var(--math-primary);
+        border-color: var(--physics-primary);
       }
 
       .chapter-card.available {
         border-color: var(--success);
+      }
+
+      .status-available {
+        background: var(--success);
+        color: white;
       }
 
       .chapter-card.coming-soon {
@@ -241,10 +246,6 @@
         cursor: default;
       }
 
-      .status-available {
-        background: var(--success);
-        color: white;
-      }
       .chapter-card.coming-soon:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 24px var(--shadow);
@@ -294,11 +295,6 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-      }
-
-      .status-coming-soon {
-        background: var(--success);
-        color: white;
       }
 
       .status-coming-soon {
@@ -369,7 +365,7 @@
         position: absolute;
         top: 1rem;
         right: 1rem;
-        background: var(--math-primary);
+        background: var(--physics-primary);
         color: white;
         width: 32px;
         height: 32px;
@@ -417,7 +413,7 @@
       .progress-number {
         font-size: 2rem;
         font-weight: 700;
-        color: var(--math-primary);
+        color: var(--physics-primary);
         margin-bottom: 0.5rem;
       }
 
@@ -476,9 +472,9 @@
     <div class="app-container">
       <div class="header">
         <div class="breadcrumb">
-          <a href="#" onclick="goBack()">Home</a>
+          <a href="./index.html">Home</a>
           <span class="breadcrumb-separator">›</span>
-          <span>Mathematics</span>
+          <span>Physics</span>
         </div>
         <div class="controls">
           <a href="#" class="back-button" onclick="goBack()"> ← Back </a>
@@ -487,144 +483,90 @@
       </div>
 
       <div class="subject-header">
-        <span class="subject-icon">🔢</span>
-        <h1 class="subject-title">Mathematics</h1>
+        <span class="subject-icon">⚛️</span>
+        <h1 class="subject-title">Physics</h1>
         <p class="subject-description">
-          Master mathematical concepts from basic arithmetic to advanced
-          calculus with our comprehensive flashcard collection
+          Discover the fundamental laws of nature, from classical mechanics to
+          quantum phenomena, through our comprehensive flashcard collection
         </p>
       </div>
 
-      <!-- <div class="progress-overview">
-            <h2 class="progress-title">Your Progress</h2>
-            <div class="progress-stats">
-                <div class="progress-item">
-                    <div class="progress-number">12</div>
-                    <div class="progress-label">Total Chapters</div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-number">8</div>
-                    <div class="progress-label">coming-soon</div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-number">3</div>
-                    <div class="progress-label">Completed</div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-number">67%</div>
-                    <div class="progress-label">Mastery</div>
-                </div>
-            </div>
-        </div> -->
-
       <div class="chapters-grid">
         <div
-          class="chapter-card coming-soon difficulty-basic"
-          onclick="openExternalLink('https://example.com/basic-arithmetic')"
+          class="chapter-card available difficulty-basic"
+          onclick="location.href='./physics/kinematics.html'"
         >
           <div class="chapter-header">
-            <div class="chapter-icon">➕</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
+            <div class="chapter-icon">📏</div>
+            <span class="chapter-status status-available">available</span>
           </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Basic Arithmetic</h3>
+          <h3 class="chapter-title">Kinematics</h3>
           <p class="chapter-description">
-            Master addition, subtraction, multiplication, and division with
-            whole numbers and decimals.
+            Study motion in one and two dimensions, velocity, acceleration, and
+            projectile motion fundamentals.
           </p>
           <div class="chapter-stats">
             <div class="stat">
               <span class="stat-icon">📚</span>
-              <span>25 Cards</span>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">⏱️</span>
-              <span>20 min</span>
-            </div>
-          </div>
-          <div class="difficulty-badge difficulty-basic">🟢 Basic</div>
-        </div>
-
-        <div
-          class="chapter-card coming-soon difficulty-basic"
-          onclick="openExternalLink('https://example.com/fractions')"
-        >
-          <div class="chapter-header">
-            <div class="chapter-icon">🍰</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
-          </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Fractions & Decimals</h3>
-          <p class="chapter-description">
-            Learn to work with fractions, convert between fractions and
-            decimals, and solve related problems.
-          </p>
-          <div class="chapter-stats">
-            <div class="stat">
-              <span class="stat-icon">📚</span>
-              <span>30 Cards</span>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">⏱️</span>
-              <span>25 min</span>
-            </div>
-          </div>
-          <div class="difficulty-badge difficulty-basic">🟢 Basic</div>
-        </div>
-
-        <div
-          class="chapter-card coming-soon difficulty-intermediate"
-          onclick="openExternalLink('https://example.com/algebra-basics')"
-        >
-          <div class="chapter-header">
-            <div class="chapter-icon">🔤</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
-          </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Algebra Basics</h3>
-          <p class="chapter-description">
-            Introduction to variables, expressions, and solving linear equations
-            step by step.
-          </p>
-          <div class="chapter-stats">
-            <div class="stat">
-              <span class="stat-icon">📚</span>
-              <span>40 Cards</span>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">⏱️</span>
-              <span>35 min</span>
-            </div>
-          </div>
-          <div class="difficulty-badge difficulty-intermediate">
-            🟡 Intermediate
-          </div>
-        </div>
-
-        <div
-          class="chapter-card coming-soon difficulty-intermediate"
-          onclick="openExternalLink('https://example.com/geometry')"
-        >
-          <div class="chapter-header">
-            <div class="chapter-icon">📐</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
-          </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Geometry Fundamentals</h3>
-          <p class="chapter-description">
-            Explore shapes, angles, area, perimeter, and basic geometric
-            theorems and proofs.
-          </p>
-          <div class="chapter-stats">
-            <div class="stat">
-              <span class="stat-icon">📚</span>
-              <span>45 Cards</span>
+              <span>100 Cards</span>
             </div>
             <div class="stat">
               <span class="stat-icon">⏱️</span>
               <span>40 min</span>
             </div>
           </div>
+          <div class="difficulty-badge difficulty-basic">🟢 Basic</div>
+        </div>
+
+        <div
+          class="chapter-card available difficulty-basic"
+          onclick="location.href='./physics/nlm.html'"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">⚡</div>
+            <span class="chapter-status status-available">available</span>
+          </div>
+          <h3 class="chapter-title">Forces, Newton's Laws & Friction</h3>
+          <p class="chapter-description">
+            Master the three laws of motion, force vectors, friction, and
+            applications of Newton's principles.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>130 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>50 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-basic">🟢 Basic</div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-intermediate"
+          onclick="openExternalLink('https://example.com/energy')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🔋</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Work, Energy & Power</h3>
+          <p class="chapter-description">
+            Explore kinetic and potential energy, work-energy theorem,
+            conservation of energy, and power calculations.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>38 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>32 min</span>
+            </div>
+          </div>
           <div class="difficulty-badge difficulty-intermediate">
             🟡 Intermediate
           </div>
@@ -632,17 +574,16 @@
 
         <div
           class="chapter-card coming-soon difficulty-intermediate"
-          onclick="openExternalLink('https://example.com/trigonometry')"
+          onclick="openExternalLink('https://example.com/momentum')"
         >
           <div class="chapter-header">
-            <div class="chapter-icon">📊</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
+            <div class="chapter-icon">🎯</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
           </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Trigonometry</h3>
+          <h3 class="chapter-title">Momentum & Collisions</h3>
           <p class="chapter-description">
-            Master sine, cosine, tangent, and their applications in solving
-            triangles and wave functions.
+            Learn about linear momentum, impulse, conservation of momentum, and
+            elastic vs inelastic collisions.
           </p>
           <div class="chapter-stats">
             <div class="stat">
@@ -660,81 +601,26 @@
         </div>
 
         <div
-          class="chapter-card coming-soon difficulty-advanced"
-          onclick="openExternalLink('https://example.com/calculus')"
-        >
-          <div class="chapter-header">
-            <div class="chapter-icon">∫</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
-          </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Calculus I</h3>
-          <p class="chapter-description">
-            Learn limits, derivatives, and their applications in optimization
-            and curve analysis.
-          </p>
-          <div class="chapter-stats">
-            <div class="stat">
-              <span class="stat-icon">📚</span>
-              <span>50 Cards</span>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">⏱️</span>
-              <span>45 min</span>
-            </div>
-          </div>
-          <div class="difficulty-badge difficulty-advanced">🔴 Advanced</div>
-        </div>
-
-        <div
-          class="chapter-card coming-soon difficulty-advanced"
-          onclick="openExternalLink('https://example.com/calculus-2')"
-        >
-          <div class="chapter-header">
-            <div class="chapter-icon">∑</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
-          </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Calculus II</h3>
-          <p class="chapter-description">
-            Master integration techniques, series, and applications of definite
-            integrals.
-          </p>
-          <div class="chapter-stats">
-            <div class="stat">
-              <span class="stat-icon">📚</span>
-              <span>55 Cards</span>
-            </div>
-            <div class="stat">
-              <span class="stat-icon">⏱️</span>
-              <span>50 min</span>
-            </div>
-          </div>
-          <div class="difficulty-badge difficulty-advanced">🔴 Advanced</div>
-        </div>
-
-        <div
           class="chapter-card coming-soon difficulty-intermediate"
-          onclick="openExternalLink('https://example.com/statistics')"
+          onclick="openExternalLink('https://example.com/rotation')"
         >
           <div class="chapter-header">
-            <div class="chapter-icon">📈</div>
-            <span class="chapter-status status-coming-soon">coming-soon</span>
+            <div class="chapter-icon">🌀</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
           </div>
-          <!-- <div class="external-link">🔗</div> -->
-          <h3 class="chapter-title">Statistics & Probability</h3>
+          <h3 class="chapter-title">Rotational Motion</h3>
           <p class="chapter-description">
-            Understand data analysis, probability distributions, and statistical
-            inference.
+            Study angular velocity, angular acceleration, torque, moment of
+            inertia, and rotational dynamics.
           </p>
           <div class="chapter-stats">
             <div class="stat">
               <span class="stat-icon">📚</span>
-              <span>42 Cards</span>
+              <span>40 Cards</span>
             </div>
             <div class="stat">
               <span class="stat-icon">⏱️</span>
-              <span>38 min</span>
+              <span>36 min</span>
             </div>
           </div>
           <div class="difficulty-badge difficulty-intermediate">
@@ -742,19 +628,131 @@
           </div>
         </div>
 
-        <div class="chapter-card coming-soon">
+        <div
+          class="chapter-card coming-soon difficulty-basic"
+          onclick="openExternalLink('https://example.com/gravitation')"
+        >
           <div class="chapter-header">
-            <div class="chapter-icon">🔢</div>
-            <span class="chapter-status status-coming-soon">Coming Soon</span>
+            <div class="chapter-icon">🌍</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
           </div>
-          <h3 class="chapter-title">Linear Algebra</h3>
+          <h3 class="chapter-title">Gravitation</h3>
           <p class="chapter-description">
-            Explore vectors, matrices, eigenvalues, and linear transformations.
+            Understand universal gravitation, orbital mechanics, gravitational
+            fields, and planetary motion.
           </p>
           <div class="chapter-stats">
             <div class="stat">
               <span class="stat-icon">📚</span>
-              <span>48 Cards</span>
+              <span>33 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>28 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-basic">🟢 Basic</div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-intermediate"
+          onclick="openExternalLink('https://example.com/oscillations')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">〰️</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Oscillations & Waves</h3>
+          <p class="chapter-description">
+            Explore simple harmonic motion, pendulums, springs, wave properties,
+            and wave interference.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>44 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>40 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-intermediate">
+            🟡 Intermediate
+          </div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-intermediate"
+          onclick="openExternalLink('https://example.com/sound')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🔊</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Sound & Acoustics</h3>
+          <p class="chapter-description">
+            Learn about sound waves, frequency, amplitude, Doppler effect, and
+            acoustic phenomena.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>36 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>32 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-intermediate">
+            🟡 Intermediate
+          </div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-basic"
+          onclick="openExternalLink('https://example.com/heat')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🌡️</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Heat & Temperature</h3>
+          <p class="chapter-description">
+            Study thermal expansion, heat transfer, specific heat capacity, and
+            phase changes.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>39 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>34 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-basic">🟢 Basic</div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-advanced"
+          onclick="openExternalLink('https://example.com/thermodynamics')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🔥</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Thermodynamics</h3>
+          <p class="chapter-description">
+            Master the laws of thermodynamics, heat engines, entropy, and
+            thermodynamic processes.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>46 Cards</span>
             </div>
             <div class="stat">
               <span class="stat-icon">⏱️</span>
@@ -764,79 +762,276 @@
           <div class="difficulty-badge difficulty-advanced">🔴 Advanced</div>
         </div>
 
-        <div class="chapter-card coming-soon">
+        <div
+          class="chapter-card coming-soon difficulty-intermediate"
+          onclick="openExternalLink('https://example.com/electrostatics')"
+        >
           <div class="chapter-header">
-            <div class="chapter-icon">🔐</div>
-            <span class="chapter-status status-coming-soon">Coming Soon</span>
+            <div class="chapter-icon">⚡</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
           </div>
-          <h3 class="chapter-title">Discrete Mathematics</h3>
+          <h3 class="chapter-title">Electrostatics</h3>
           <p class="chapter-description">
-            Learn logic, set theory, combinatorics, and graph theory
-            fundamentals.
+            Explore electric charge, Coulomb's law, electric fields, electric
+            potential, and capacitance.
           </p>
           <div class="chapter-stats">
             <div class="stat">
               <span class="stat-icon">📚</span>
-              <span>38 Cards</span>
+              <span>48 Cards</span>
             </div>
             <div class="stat">
               <span class="stat-icon">⏱️</span>
-              <span>35 min</span>
+              <span>44 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-intermediate">
+            🟡 Intermediate
+          </div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-intermediate"
+          onclick="openExternalLink('https://example.com/current')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🔌</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Current Electricity</h3>
+          <p class="chapter-description">
+            Learn about electric current, resistance, Ohm's law, circuits, and
+            electrical power.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>41 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>37 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-intermediate">
+            🟡 Intermediate
+          </div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-advanced"
+          onclick="openExternalLink('https://example.com/magnetism')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🧲</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Magnetism & Electromagnetic Induction</h3>
+          <p class="chapter-description">
+            Study magnetic fields, electromagnetic induction, Faraday's law, and
+            electromagnetic applications.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>52 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>48 min</span>
             </div>
           </div>
           <div class="difficulty-badge difficulty-advanced">🔴 Advanced</div>
         </div>
 
-        <div class="chapter-card coming-soon">
+        <div
+          class="chapter-card coming-soon difficulty-intermediate"
+          onclick="openExternalLink('https://example.com/optics')"
+        >
           <div class="chapter-header">
-            <div class="chapter-icon">🌊</div>
-            <span class="chapter-status status-coming-soon">Coming Soon</span>
+            <div class="chapter-icon">🔍</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
           </div>
-          <h3 class="chapter-title">Differential Equations</h3>
+          <h3 class="chapter-title">Optics</h3>
           <p class="chapter-description">
-            Solve ordinary differential equations and understand their
-            real-world applications.
+            Explore light properties, reflection, refraction, lenses, mirrors,
+            and optical instruments.
           </p>
           <div class="chapter-stats">
             <div class="stat">
               <span class="stat-icon">📚</span>
-              <span>45 Cards</span>
+              <span>43 Cards</span>
             </div>
             <div class="stat">
               <span class="stat-icon">⏱️</span>
-              <span>40 min</span>
+              <span>39 min</span>
+            </div>
+          </div>
+          <div class="difficulty-badge difficulty-intermediate">
+            🟡 Intermediate
+          </div>
+        </div>
+
+        <div
+          class="chapter-card coming-soon difficulty-advanced"
+          onclick="openExternalLink('https://example.com/modern')"
+        >
+          <div class="chapter-header">
+            <div class="chapter-icon">🌌</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
+          </div>
+          <h3 class="chapter-title">Modern Physics</h3>
+          <p class="chapter-description">
+            Dive into relativity, quantum mechanics, atomic structure, and
+            particle physics concepts.
+          </p>
+          <div class="chapter-stats">
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span>55 Cards</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">⏱️</span>
+              <span>52 min</span>
             </div>
           </div>
           <div class="difficulty-badge difficulty-advanced">🔴 Advanced</div>
         </div>
 
-        <div class="chapter-card coming-soon">
+        <div
+          class="chapter-card coming-soon difficulty-advanced"
+          onclick="openExternalLink('https://example.com/nuclear')"
+        >
           <div class="chapter-header">
-            <div class="chapter-icon">🧮</div>
-            <span class="chapter-status status-coming-soon">Coming Soon</span>
+            <div class="chapter-icon">☢️</div>
+            <span class="chapter-status status-coming-soon">coming soon</span>
           </div>
-          <h3 class="chapter-title">Number Theory</h3>
+          <h3 class="chapter-title">Nuclear Physics</h3>
           <p class="chapter-description">
-            Explore prime numbers, modular arithmetic, and cryptographic
-            applications.
+            Study radioactivity, nuclear reactions, radioactive decay, and
+            nuclear energy applications.
           </p>
           <div class="chapter-stats">
             <div class="stat">
               <span class="stat-icon">📚</span>
-              <span>32 Cards</span>
+              <span>49 Cards</span>
             </div>
             <div class="stat">
               <span class="stat-icon">⏱️</span>
-              <span>28 min</span>
+              <span>45 min</span>
             </div>
           </div>
           <div class="difficulty-badge difficulty-advanced">🔴 Advanced</div>
         </div>
       </div>
-    </div>
+
+      <!-- <div class="progress-overview">
+        <h2 class="progress-title">Your Progress</h2>
+        <div class="progress-stats">
+          <div class="progress-item">
+            <div class="progress-number">1</div>
+            <div class="progress-label">Chapters<br />Completed</div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-number">15</div>
+            <div class="progress-label">Total<br />Chapters</div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-number">45</div>
+            <div class="progress-label">Cards<br />Studied</div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-number">685</div>
+            <div class="progress-label">Total<br />Cards</div>
+          </div>
+        </div>
+      </div>
+    </div> -->
 
     <script>
-      // Initialize app
+    //   // Theme toggle functionality
+    //   function toggleTheme() {
+    //     const body = document.body;
+    //     const currentTheme = body.getAttribute("data-theme");
+    //     const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    //     body.setAttribute("data-theme", newTheme);
+    //     localStorage.setItem("theme", newTheme);
+    //   }
+
+    //   // Load saved theme
+    //   function loadTheme() {
+    //     const savedTheme = localStorage.getItem("theme");
+    //     if (savedTheme) {
+    //       document.body.setAttribute("data-theme", savedTheme);
+    //     } else {
+    //       // Default to light theme
+    //       document.body.setAttribute("data-theme", "light");
+    //     }
+    //   }
+
+    //   // Back button functionality
+    //   function goBack() {
+    //     window.history.back();
+    //   }
+
+    //   // External link functionality
+    //   function openExternalLink(url) {
+    //     window.open(url, "_blank");
+    //   }
+
+    //   // Initialize theme on page load
+    //   document.addEventListener("DOMContentLoaded", loadTheme);
+
+    //   // Add keyboard navigation
+    //   document.addEventListener("keydown", function (e) {
+    //     if (e.key === "Escape") {
+    //       goBack();
+    //     }
+    //   });
+
+    //   // Add smooth scrolling for better UX
+    //   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    //     anchor.addEventListener("click", function (e) {
+    //       e.preventDefault();
+    //       const target = document.querySelector(this.getAttribute("href"));
+    //       if (target) {
+    //         target.scrollIntoView({
+    //           behavior: "smooth",
+    //           block: "start",
+    //         });
+    //       }
+    //     });
+    //   });
+
+    //   // Add animation when cards come into view
+    //   const observerOptions = {
+    //     threshold: 0.1,
+    //     rootMargin: "0px 0px -50px 0px",
+    //   };
+
+    //   const observer = new IntersectionObserver((entries) => {
+    //     entries.forEach((entry) => {
+    //       if (entry.isIntersecting) {
+    //         entry.target.style.opacity = "1";
+    //         entry.target.style.transform = "translateY(0)";
+    //       }
+    //     });
+    //   }, observerOptions);
+
+    //   // Observe all chapter cards
+    //   document.addEventListener("DOMContentLoaded", () => {
+    //     const cards = document.querySelectorAll(".chapter-card");
+    //     cards.forEach((card, index) => {
+    //       card.style.opacity = "0";
+    //       card.style.transform = "translateY(20px)";
+    //       card.style.transition = `opacity 0.6s ease ${
+    //         index * 0.1
+    //       }s, transform 0.6s ease ${index * 0.1}s`;
+    //       observer.observe(card);
+    //     });
+    //   });
+    // Initialize app
       function initializeApp() {
         const savedTheme = sessionStorage.getItem("theme") || "light";
         document.documentElement.setAttribute("data-theme", savedTheme);
@@ -851,19 +1046,64 @@
         sessionStorage.setItem("theme", newTheme);
       }
 
-      // Open external link
-      function openExternalLink(url) {
-        window.open(url, "_blank");
-      }
-
-      // Go back to main page
+      // Go back function
       function goBack() {
-        // You can replace this with actual navigation logic
-        window.history.back();
+        // In a real app, this would navigate back to the main page
+        alert("This would navigate back to the main study hub page");
       }
 
-      // Initialize app when page loads
+      // Open external link function
+      function openExternalLink(url) {
+        // In a real app, this would open the specific chapter
+        alert(`This would open the flashcard set: ${url}`);
+      }
+
+      // Initialize the app when DOM is loaded
       document.addEventListener("DOMContentLoaded", initializeApp);
+
+      // Add keyboard shortcuts
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "t" && e.ctrlKey) {
+          e.preventDefault();
+          toggleTheme();
+        }
+      });
+
+      // Add some interactive enhancements
+      document.querySelectorAll(".chapter-card.available").forEach((card) => {
+        card.addEventListener("mouseenter", function () {
+          this.style.transform = "translateY(-8px) scale(1.02)";
+        });
+
+        card.addEventListener("mouseleave", function () {
+          this.style.transform = "translateY(0) scale(1)";
+        });
+      });
+
+      // Simulate progress updates
+      function updateProgress() {
+        const progressNumbers = document.querySelectorAll(".progress-number");
+        progressNumbers.forEach((number, index) => {
+          const originalValue = number.textContent;
+          let currentValue = 0;
+          const targetValue = parseInt(originalValue) || originalValue;
+
+          if (typeof targetValue === "number") {
+            const increment = targetValue / 20;
+            const timer = setInterval(() => {
+              currentValue += increment;
+              if (currentValue >= targetValue) {
+                currentValue = targetValue;
+                clearInterval(timer);
+              }
+              number.textContent = Math.round(currentValue);
+            }, 50);
+          }
+        });
+      }
+
+      // Run progress animation after page load
+      setTimeout(updateProgress, 500);
     </script>
   </body>
 </html>
